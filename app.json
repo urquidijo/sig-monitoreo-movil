@@ -20,6 +20,21 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Esta app necesita acceso a tu ubicación para enviarla en tiempo real al panel de monitoreo."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Esta app necesita acceso a la cámara para escanear el código QR de vinculación."
+        }
+      ]
+    ]
   }
 }
