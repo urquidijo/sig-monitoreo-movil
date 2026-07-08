@@ -23,7 +23,8 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.anonymous.sigmonitoreomovil"
+      "package": "com.uagrm.sigmonitoreo",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -43,6 +44,12 @@
         }
       ],
       "expo-notifications"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "99ee7661-1635-413b-817e-cda5583a9245"
+      }
+    },
+    "owner": "josuecova"
   }
 }

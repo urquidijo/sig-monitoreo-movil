@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "242884848899",
+    "project_id": "sig-app-34c04",
+    "storage_bucket": "sig-app-34c04.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242884848899:android:b89af034c219b6b4568d36",
+        "android_client_info": {
+          "package_name": "com.uagrm.sigmonitoreo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI1h8aL3MPcLMIsO2vLpNuWhsJ_PTFsk4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
