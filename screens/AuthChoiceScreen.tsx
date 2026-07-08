@@ -1,4 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppButton, Brand } from '../components/ui';
+import { colors, spacing } from '../lib/theme';
 
 type Props = {
   onIniciarSesion: () => void;
@@ -11,21 +13,18 @@ export default function AuthChoiceScreen({
 }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>SIG Monitoreo</Text>
-      <Text style={styles.label}>¿Cómo quieres usar la app?</Text>
+      <View style={styles.brandWrap}>
+        <Brand subtitle="Monitoreo infantil en tiempo real" />
+      </View>
 
-      <TouchableOpacity style={styles.primaryButton} onPress={onIniciarSesion}>
-        <Text style={styles.primaryButtonText}>Soy tutor, iniciar sesión</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.secondaryButton}
-        onPress={onConfigurarDispositivo}
-      >
-        <Text style={styles.secondaryButtonText}>
-          Configurar celular del niño
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.actions}>
+        <AppButton title="Soy tutor · Iniciar sesión" onPress={onIniciarSesion} />
+        <AppButton
+          title="Configurar celular del niño"
+          variant="secondary"
+          onPress={onConfigurarDispositivo}
+        />
+      </View>
     </View>
   );
 }
@@ -33,43 +32,16 @@ export default function AuthChoiceScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.bg,
+    padding: spacing.xxl,
     justifyContent: 'center',
+    gap: 48,
+  },
+  brandWrap: {
     alignItems: 'center',
-    padding: 24,
-    gap: 16,
+    gap: spacing.sm,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: '800',
-  },
-  label: {
-    textAlign: 'center',
-    color: '#475569',
-    marginBottom: 12,
-  },
-  primaryButton: {
-    width: '100%',
-    borderRadius: 14,
-    paddingVertical: 16,
-    backgroundColor: '#0891b2',
-    alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  secondaryButton: {
-    width: '100%',
-    borderRadius: 14,
-    paddingVertical: 16,
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    alignItems: 'center',
-  },
-  secondaryButtonText: {
-    color: '#334155',
-    fontWeight: '600',
-    fontSize: 15,
+  actions: {
+    gap: spacing.md,
   },
 });

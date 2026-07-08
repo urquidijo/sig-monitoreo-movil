@@ -1,8 +1,10 @@
 import * as Location from 'expo-location';
 import { useEffect, useRef, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { io, Socket } from 'socket.io-client';
 import { API_URL } from '../lib/config';
+import { AppButton, Brand, Card } from '../components/ui';
+import { colors, radius, spacing } from '../lib/theme';
 
 type Props = {
   deviceToken: string;
@@ -85,37 +87,64 @@ export default function TrackingScreen({
     };
   }, []);
 
+  const esAlerta = dentroArea === false;
+
+  const textoEstado =
+    estadoConexion === 'conectando'
+      ? 'Conectando...'
+      : estadoConexion === 'error'
+        ? `Error: ${mensajeError}`
+        : dentroArea === null
+          ? 'Esperando primera ubicación...'
+          : dentroArea
+            ? 'Dentro del área segura'
+            : 'ALERTA: fuera del área segura';
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{nombreNino}</Text>
+      <View style={styles.brandWrap}>
+        <Brand subtitle="Dispositivo del niño" />
+      </View>
+
+      <Text style={styles.nombre}>{nombreNino}</Text>
 
       <View
         style={[
           styles.badge,
-          dentroArea === false ? styles.badgeAlerta : styles.badgeNormal,
+          esAlerta || estadoConexion === 'error'
+            ? styles.badgeDanger
+            : styles.badgeNormal,
         ]}
       >
-        <Text style={styles.badgeText}>
-          {estadoConexion === 'conectando' && 'Conectando...'}
-          {estadoConexion === 'error' && `Error: ${mensajeError}`}
-          {estadoConexion === 'conectado' &&
-            (dentroArea === null
-              ? 'Esperando primera posición...'
-              : dentroArea
-                ? 'Dentro del área segura'
-                : 'ALERTA: fuera del área segura')}
+        <Text
+          style={[
+            styles.badgeText,
+            esAlerta || estadoConexion === 'error'
+              ? styles.badgeTextDanger
+              : styles.badgeTextOk,
+          ]}
+        >
+          {textoEstado}
         </Text>
       </View>
 
       {ultimaPosicion && (
-        <View style={styles.coords}>
-          <Text>Lat: {ultimaPosicion.latitude.toFixed(6)}</Text>
-          <Text>Lng: {ultimaPosicion.longitude.toFixed(6)}</Text>
-        </View>
+        <Card style={styles.coordsCard}>
+          <Text style={styles.coordsLabel}>Ubicación actual</Text>
+          <Text style={styles.coordsValue}>
+            {ultimaPosicion.latitude.toFixed(6)},{' '}
+            {ultimaPosicion.longitude.toFixed(6)}
+          </Text>
+        </Card>
       )}
 
-      <View style={{ height: 24 }} />
-      <Button title="Desvincular dispositivo" onPress={onDesvincular} color="#dc2626" />
+      <View style={styles.acciones}>
+        <AppButton
+          title="Desvincular dispositivo"
+          variant="danger"
+          onPress={onDesvincular}
+        />
+      </View>
     </View>
   );
 }
@@ -123,31 +152,44 @@ export default function TrackingScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.bg,
+    padding: spacing.xxl,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-    gap: 16,
+    gap: spacing.xl,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  badge: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-  },
-  badgeNormal: {
-    backgroundColor: '#dcfce7',
-  },
-  badgeAlerta: {
-    backgroundColor: '#fee2e2',
-  },
-  badgeText: {
-    fontWeight: '600',
+  brandWrap: { alignItems: 'center' },
+  nombre: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: colors.text,
     textAlign: 'center',
   },
-  coords: {
-    alignItems: 'center',
+  badge: {
+    borderRadius: radius.lg,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    borderWidth: 1,
   },
+  badgeNormal: {
+    backgroundColor: 'rgba(34,197,94,0.12)',
+    borderColor: 'rgba(34,197,94,0.4)',
+  },
+  badgeDanger: {
+    backgroundColor: colors.dangerBg,
+    borderColor: colors.dangerBorder,
+  },
+  badgeText: { fontWeight: '700', textAlign: 'center', fontSize: 16 },
+  badgeTextOk: { color: colors.accent },
+  badgeTextDanger: { color: colors.dangerText },
+
+  coordsCard: { alignItems: 'center', gap: 4 },
+  coordsLabel: {
+    color: colors.textMuted,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  coordsValue: { color: colors.text, fontSize: 15, fontWeight: '600' },
+
+  acciones: { marginTop: spacing.md },
 });

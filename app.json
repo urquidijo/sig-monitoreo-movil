@@ -41,7 +41,8 @@
         {
           "cameraPermission": "Esta app necesita acceso a la cámara para escanear el código QR de vinculación."
         }
-      ]
+      ],
+      "expo-notifications"
     ]
   }
 }

@@ -1,13 +1,8 @@
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  Button,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { ApiError, login, Usuario } from '../lib/auth';
+import { AppButton, Brand, Card, Input } from '../components/ui';
+import { colors, spacing } from '../lib/theme';
 
 type Props = {
   onLogin: (data: { accessToken: string; usuario: Usuario }) => void;
@@ -38,40 +33,38 @@ export default function LoginScreen({ onLogin, onVolver }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar sesión</Text>
+      <View style={styles.brandWrap}>
+        <Brand />
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+      <Card style={styles.card}>
+        <Text style={styles.title}>Iniciar sesión</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        <Input
+          placeholder="Email"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        <Input
+          placeholder="Contraseña"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
 
-      {cargando ? (
-        <ActivityIndicator />
-      ) : (
-        <>
-          <Button
-            title="Ingresar"
-            onPress={handleSubmit}
-            disabled={!email || !password}
-          />
-          <View style={{ height: 12 }} />
-          <Button title="Volver" onPress={onVolver} color="#64748b" />
-        </>
-      )}
+        {error && <Text style={styles.error}>{error}</Text>}
+
+        <AppButton
+          title="Ingresar"
+          onPress={handleSubmit}
+          loading={cargando}
+          disabled={!email || !password}
+        />
+        <AppButton title="Volver" variant="ghost" onPress={onVolver} />
+      </Card>
     </View>
   );
 }
@@ -79,26 +72,22 @@ export default function LoginScreen({ onLogin, onVolver }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.bg,
+    padding: spacing.xxl,
     justifyContent: 'center',
-    padding: 24,
-    gap: 12,
+    gap: spacing.xxl,
   },
+  brandWrap: { alignItems: 'center' },
+  card: { gap: spacing.md },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
+    color: colors.text,
     textAlign: 'center',
-    marginBottom: 12,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
+    marginBottom: spacing.xs,
   },
   error: {
-    color: '#dc2626',
+    color: colors.dangerText,
     textAlign: 'center',
   },
 });

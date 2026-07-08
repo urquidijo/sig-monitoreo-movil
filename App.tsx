@@ -7,6 +7,9 @@ import TrackingScreen from './screens/TrackingScreen';
 import AuthChoiceScreen from './screens/AuthChoiceScreen';
 import LoginScreen from './screens/LoginScreen';
 import MisNinosScreen from './screens/MisNinosScreen';
+import MapaNinoScreen from './screens/MapaNinoScreen';
+import ZonasScreen from './screens/ZonasScreen';
+import AlertasScreen from './screens/AlertasScreen';
 import { apiFetch, Usuario } from './lib/auth';
 
 const CLAVE_DEVICE_TOKEN = 'deviceToken';
@@ -23,11 +26,22 @@ type Sesion = {
   usuario: Usuario;
 };
 
-type Pantalla = 'auth-choice' | 'login' | 'mis-ninos' | 'pairing' | 'tracking';
+type Pantalla =
+  | 'auth-choice'
+  | 'login'
+  | 'mis-ninos'
+  | 'mapa'
+  | 'zonas'
+  | 'alertas'
+  | 'pairing'
+  | 'tracking';
+
+type NinoSeleccionado = { id: number; nombre: string };
 
 export default function App() {
   const [cargando, setCargando] = useState(true);
   const [vinculacion, setVinculacion] = useState<Vinculacion | null>(null);
+  const [ninoMapa, setNinoMapa] = useState<NinoSeleccionado | null>(null);
   const [sesion, setSesion] = useState<Sesion | null>(null);
   const [pantalla, setPantalla] = useState<Pantalla>('auth-choice');
 
@@ -87,9 +101,9 @@ export default function App() {
 
   if (cargando) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator />
-        <StatusBar style="auto" />
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <ActivityIndicator color="#22c55e" />
+        <StatusBar style="light" />
       </View>
     );
   }
@@ -115,6 +129,35 @@ export default function App() {
           token={sesion.token}
           usuario={sesion.usuario}
           onCerrarSesion={handleCerrarSesion}
+          onVerMapa={(nino) => {
+            setNinoMapa(nino);
+            setPantalla('mapa');
+          }}
+          onVerZonas={() => setPantalla('zonas')}
+          onVerAlertas={() => setPantalla('alertas')}
+        />
+      )}
+
+      {pantalla === 'zonas' && sesion && (
+        <ZonasScreen
+          token={sesion.token}
+          onVolver={() => setPantalla('mis-ninos')}
+        />
+      )}
+
+      {pantalla === 'alertas' && sesion && (
+        <AlertasScreen
+          token={sesion.token}
+          onVolver={() => setPantalla('mis-ninos')}
+        />
+      )}
+
+      {pantalla === 'mapa' && sesion && ninoMapa && (
+        <MapaNinoScreen
+          token={sesion.token}
+          ninoId={ninoMapa.id}
+          nombreNino={ninoMapa.nombre}
+          onVolver={() => setPantalla('mis-ninos')}
         />
       )}
 
@@ -130,7 +173,7 @@ export default function App() {
         />
       )}
 
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </View>
   );
 }
@@ -138,6 +181,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#020617',
   },
 });

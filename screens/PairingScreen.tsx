@@ -1,14 +1,9 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  Button,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { API_URL } from '../lib/config';
+import { AppButton, Brand, Card, Input } from '../components/ui';
+import { colors, radius, spacing } from '../lib/theme';
 
 type Props = {
   onVinculado: (data: { deviceToken: string; ninoId: number; nombreNino: string }) => void;
@@ -60,9 +55,15 @@ export default function PairingScreen({ onVinculado }: Props) {
     if (!permission?.granted) {
       return (
         <View style={styles.container}>
-          <Text style={styles.label}>Se necesita acceso a la cámara para escanear el QR.</Text>
-          <Button title="Permitir cámara" onPress={requestPermission} />
-          <Button title="Cancelar" onPress={() => setEscaneando(false)} />
+          <Text style={styles.label}>
+            Se necesita acceso a la cámara para escanear el QR.
+          </Text>
+          <AppButton title="Permitir cámara" onPress={requestPermission} />
+          <AppButton
+            title="Cancelar"
+            variant="ghost"
+            onPress={() => setEscaneando(false)}
+          />
         </View>
       );
     }
@@ -74,48 +75,58 @@ export default function PairingScreen({ onVinculado }: Props) {
           barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
           onBarcodeScanned={handleBarcodeScanned}
         />
-        <Button title="Cancelar" onPress={() => setEscaneando(false)} />
+        <AppButton
+          title="Cancelar"
+          variant="secondary"
+          onPress={() => setEscaneando(false)}
+        />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Vincular dispositivo</Text>
-      <Text style={styles.label}>
-        Ingresa el código de 6 dígitos que aparece en la web, o escanea el QR.
-      </Text>
+      <View style={styles.brandWrap}>
+        <Brand />
+      </View>
 
-      <TextInput
-        style={styles.input}
-        value={codigo}
-        onChangeText={setCodigo}
-        placeholder="000000"
-        keyboardType="number-pad"
-        maxLength={6}
-      />
+      <Card style={styles.card}>
+        <Text style={styles.title}>Vincular dispositivo</Text>
+        <Text style={styles.label}>
+          Ingresa el código de 6 dígitos que aparece en la web, o escanea el QR.
+        </Text>
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        <Input
+          style={styles.codigoInput}
+          value={codigo}
+          onChangeText={setCodigo}
+          placeholder="000000"
+          keyboardType="number-pad"
+          maxLength={6}
+        />
 
-      {cargando ? (
-        <ActivityIndicator />
-      ) : (
-        <>
-          <Button
-            title="Vincular"
-            onPress={() => confirmarCodigo(codigo)}
-            disabled={codigo.length !== 6}
-          />
-          <View style={{ height: 12 }} />
-          <Button
-            title="Escanear QR"
-            onPress={() => {
-              setEscaneado(false);
-              setEscaneando(true);
-            }}
-          />
-        </>
-      )}
+        {error && <Text style={styles.error}>{error}</Text>}
+
+        {cargando ? (
+          <ActivityIndicator color={colors.accent} />
+        ) : (
+          <>
+            <AppButton
+              title="Vincular"
+              onPress={() => confirmarCodigo(codigo)}
+              disabled={codigo.length !== 6}
+            />
+            <AppButton
+              title="Escanear QR"
+              variant="secondary"
+              onPress={() => {
+                setEscaneado(false);
+                setEscaneando(true);
+              }}
+            />
+          </>
+        )}
+      </Card>
     </View>
   );
 }
@@ -123,38 +134,31 @@ export default function PairingScreen({ onVinculado }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.bg,
+    padding: spacing.xxl,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-    gap: 12,
+    gap: spacing.xl,
+  },
+  brandWrap: { alignItems: 'center' },
+  card: { gap: spacing.md },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.text,
+    textAlign: 'center',
+  },
+  label: { color: colors.textMuted, textAlign: 'center', fontSize: 13 },
+  codigoInput: {
+    letterSpacing: 6,
+    textAlign: 'center',
+    fontSize: 26,
+    fontWeight: '700',
   },
   camera: {
     width: '100%',
-    height: 320,
-    borderRadius: 12,
+    height: 340,
+    borderRadius: radius.lg,
     overflow: 'hidden',
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-  },
-  label: {
-    textAlign: 'center',
-    color: '#475569',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    fontSize: 24,
-    letterSpacing: 4,
-    textAlign: 'center',
-    width: '100%',
-  },
-  error: {
-    color: '#dc2626',
-    textAlign: 'center',
-  },
+  error: { color: colors.dangerText, textAlign: 'center' },
 });
